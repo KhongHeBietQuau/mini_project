@@ -13,4 +13,6 @@ public class GetListDepartmentInput {
     private Integer page;
     private Integer size;
     private String keyword;
+    private String sort;
+    private String typeSort;
 }

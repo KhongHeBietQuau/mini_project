@@ -11,6 +11,8 @@ import com.ms.tourist_app.application.service.DepartmentService;
 import com.ms.tourist_app.application.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -32,5 +34,12 @@ public class DepartmentController {
         DepartmentDataOutput output = departmentService.creatDepartment(input);
 
         return ResponseUtil.restSuccess(output);
+    }
+
+    @DeleteMapping("department/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> deleteDepartment(@PathVariable(UrlConst.id)Long id){
+        DepartmentDataOutput departmentDataOutput = departmentService.deleteDepartment(id);
+        return ResponseUtil.restSuccess(departmentDataOutput);
     }
 }

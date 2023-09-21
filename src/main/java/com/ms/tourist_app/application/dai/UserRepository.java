@@ -13,8 +13,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     User findByEmail(String email);
 
     @Query("select u from User u " +
-            "where upper(u.name) like upper(concat('%', ?1, '%'))or upper(u.email) like upper(concat('%', ?1, '%'))")
-    List<User> search(String keyword, Pageable pageable);
+            "where upper(u.name) like upper(concat('%', ?1, '%'))or upper(u.email) " +
+            "like upper(concat('%', ?1, '%'))" +"order by u.email asc " )
+    List<User> search(String keyword,String field,String type, Pageable pageable);
 
 
 

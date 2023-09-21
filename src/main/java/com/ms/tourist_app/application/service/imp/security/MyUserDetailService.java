@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Service
 public class MyUserDetailService implements UserDetailsService {
-
+// lấy thông tin user do user truyền vào
     private final UserRepository userRepository;
 
     public MyUserDetailService(UserRepository userRepository) {

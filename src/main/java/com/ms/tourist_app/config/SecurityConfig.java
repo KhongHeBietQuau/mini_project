@@ -24,8 +24,9 @@ import org.springframework.web.cors.CorsConfiguration;
         jsr250Enabled = true)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    // lấy thông tin user gửi lên
     private final MyUserDetailService myUserDetailsService;
-
+    // bộ lọc
     private final JwtRequestFilter jwtRequestFilter;
 
     public SecurityConfig(MyUserDetailService myUserDetailsService, JwtRequestFilter jwtRequestFilter) {
@@ -34,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    // mã hóa mật khẩu
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -41,10 +43,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
         auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
     }
     protected void configure(HttpSecurity http) throws Exception {
-
+        // config cors
         http.cors().configurationSource(request -> corsConfiguration())
                 .and().csrf().disable()
                 .authorizeRequests()
@@ -52,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
     CorsConfiguration corsConfiguration() {
+        // đồng ý các phương thức
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.applyPermitDefaultValues();
         corsConfiguration.addAllowedMethod(HttpMethod.PATCH);

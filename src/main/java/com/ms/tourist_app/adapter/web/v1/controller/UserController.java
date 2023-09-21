@@ -25,16 +25,15 @@ public class UserController {
     }
 
     @PostMapping(UrlConst.User.users)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDataInput input) {
-
         UserDataOutput output = userService.createUser(input);
 
         return ResponseUtil.restSuccess(output);
     }
 
     @GetMapping(UrlConst.User.users)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    //@PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> getAllUser(GetListUserInput input){
 
         List<UserDataOutput> output = userService.getListUserOutPut(input);
@@ -42,14 +41,14 @@ public class UserController {
     }
 
     @GetMapping(UrlConst.User.getUserById)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> getUserData(@PathVariable(UrlConst.id)Long id){
         UserDataOutput userDataOutput = userService.getUserDataOutput(id);
         return ResponseUtil.restSuccess(userDataOutput);
     }
 
     @PutMapping(UrlConst.User.getUserById)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> updateUser(@PathVariable(UrlConst.id)Long id,@Valid @RequestBody UserDataInput input){
 
         UserDataOutput userDataOutput = userService.editUser(id,input);
@@ -57,7 +56,7 @@ public class UserController {
     }
 
     @DeleteMapping(UrlConst.User.getUserById)
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable(UrlConst.id)Long id){
         UserDataOutput userDataOutput = userService.deleteUser(id);
         return ResponseUtil.restSuccess(userDataOutput);

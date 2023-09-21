@@ -19,12 +19,14 @@ import java.util.Map;
 @Service
 @DependsOn("appEnv")
 public class JwtUtil {
+    // chứa các phương thức cơ bản
 
     private static final String SECRET_KEY = AppEnv.jwtConfigSecretKey;
 
     private static final Integer TIME_EXPIRATION = AppEnv.jwtConfigTimeExpiration;
 
     private final UserRepository userRepository;
+    //
     private static HttpServletRequest httpServletRequest;
 
     public JwtUtil(UserRepository userRepository, HttpServletRequest httpServletRequest) {
@@ -33,26 +35,34 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
+        // lấy username theo token
         Claims claims = Jwts.parser().setSigningKey(AppEnv.jwtConfigSecretKey).parseClaimsJws(token).getBody();
         return claims.get("username").toString();
     }
 
     public Date extractExpiration(String token) {
+        // lấy thời gian hết hạn
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getExpiration();
     }
 
     public Boolean isTokenExpired(String token) {
+        // kiểm tra đã hết hạn hay chưa
         return extractExpiration(token).before(new Date());
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
+        // kiểm tra token
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public Long getUserIdFromToken() {
-        if (httpServletRequest.getHeader(AppStr.Auth.authorization)!=null&&httpServletRequest.getHeader(AppStr.Auth.authorization).replace(AppStr.Auth.bearer.concat(AppStr.Base.whiteSpace), "").length() > 6) {
+        // lấy header khác null và có chứa jwt
+        if (httpServletRequest.getHeader(AppStr.Auth.authorization)!=null&&httpServletRequest.getHeader
+                (AppStr.Auth.authorization).replace(AppStr.Auth.bearer.concat(AppStr.Base.whiteSpace), "").length() > 6) {
+            // xóa bearer đầu tiên
             String jwt = httpServletRequest.getHeader(AppStr.Auth.authorization).replace(AppStr.Auth.bearer.concat(AppStr.Base.whiteSpace), "");
+           // lấy id từ claims
             Claims claims = Jwts.parser().setSigningKey(AppEnv.jwtConfigSecretKey).parseClaimsJws(jwt).getBody();
             return Long.parseLong(claims.get("id").toString());
         } else {
@@ -61,6 +71,7 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
+        // tạo token
         Map<String, Object> claim = new HashMap<>();
         System.out.println(new Date(System.currentTimeMillis()) + " " + TIME_EXPIRATION + " " + SECRET_KEY);
         User user = userRepository.findByEmail(userDetails.getUsername());

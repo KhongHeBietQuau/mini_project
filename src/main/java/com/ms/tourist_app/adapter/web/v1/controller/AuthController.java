@@ -32,4 +32,8 @@ public class AuthController {
     public ResponseEntity<?> signUpUser( @RequestBody UserDataInput input){
         return ResponseUtil.restSuccess(authService.signupUser(input));
     }
+    @PostMapping(UrlConst.Auth.signUp+"/admin")
+    public ResponseEntity<?> signUpAdmin( @RequestBody UserDataInput input){
+        return ResponseUtil.restSuccess(authService.signupAdmin(input));
+    }
 }

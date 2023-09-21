@@ -13,6 +13,7 @@ import com.ms.tourist_app.config.exception.NotFoundException;
 import com.ms.tourist_app.domain.entity.*;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -75,8 +76,10 @@ public class UserServiceImp implements UserService {
         if(input.getKeyword().trim().isBlank()){
             users = userRepository.findAll(PageRequest.of(input.getPage(), input.getSize())).getContent();
         }
+
         if(!input.getKeyword().trim().isBlank()){
-            users = userRepository.search(input.getKeyword().trim(),PageRequest.of(input.getPage(), input.getSize()));
+            users = userRepository.search(input.getKeyword().trim(),"u.email","",PageRequest.of(input.getPage(),
+                    input.getSize()));
         }
         List<UserDataOutput> userDataOutputs = new ArrayList<>();
         for (User u : users) {
@@ -118,9 +121,14 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public UserDataOutput deleteUser(Long id) {
+
         Optional<User> user = userRepository.findById(id);
         if (!checkUserExists(id)) {
             throw new NotFoundException(AppStr.User.user + AppStr.Base.whiteSpace + AppStr.Exception.notFound);
+        }
+        if(id == jwtUtil.getUserIdFromToken())
+        {
+            throw new BadRequestException("Bạn không thể xóa chính mình");
         }
         for (Role role : user.get().getRoles()) {
             role.getUsers().remove(user.get());
